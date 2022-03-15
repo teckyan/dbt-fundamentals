@@ -1,0 +1,44 @@
+version: 2
+
+sources:
+    - name: jaffle_shop
+      database: raw
+      schema: jaffle_shop
+      tables:
+          - name: customers
+            description: Customer Table
+            columns:
+              - name: id
+                description: Primary Key
+                tests:
+                    - unique
+                    - not_null
+          - name: orders
+            description: Orders table
+            columns:
+              - name: id
+                description: Unique Primary Key
+                tests:
+                  - unique
+                  - not_null
+            loaded_at_field: _etl_loaded_at
+            freshness:
+                warn_after: {count: 12, period: hour}
+                error_after: {count: 24, period: hour}
+
+    - name: stripe
+      database: raw
+      schema: stripe
+      tables:
+          - name: payment
+            description: Table with Payment info
+            columns:
+              - name: id
+                description: Unique and non-null Primary Key
+                tests:
+                  - unique
+                  - not_null
+            loaded_at_field: _BATCHED_AT
+            freshness:
+                warn_after: {count: 12, period: hour}
+                error_after: {count: 24 , period: hour}
